@@ -28,8 +28,7 @@ MUTATION_PATTERN = re.compile(r"^([A-Z])(\d+)([A-Z*])$")
 
 SI002_FILENAME = "cs1c02786_si_002.csv"
 SI003_FILENAME = "cs1c02786_si_003.csv"
-MASTER_TABLE_FILENAME = "ired-master-table.csv"
-LAYOUTS_FILENAME = "layouts.csv"
+WT_FASTA_FILENAME = "ired88_wt.fasta"
 
 
 def load_si002() -> pd.DataFrame:
@@ -52,40 +51,18 @@ def load_si003() -> pd.DataFrame:
     return pd.read_csv(RAW_DATA_DIR / SI003_FILENAME, index_col=0)
 
 
-def load_master_table() -> pd.DataFrame:
-    """Load the row-level variant records from the screening campaign.
-
-    :returns: DataFrame with one row per measured sample: layout code, plate
-        position, mutation string, full protein sequence, and plate code.
-    """
-    return pd.read_csv(RAW_DATA_DIR / MASTER_TABLE_FILENAME, index_col=0)
-
-
-def load_layouts() -> pd.DataFrame:
-    """Load plate layout metadata.
-
-    :returns: DataFrame with ``layout_id``, ``layout_code``, ``experiment``,
-        ``plate_size``, and ``comment`` columns.
-    """
-    return pd.read_csv(RAW_DATA_DIR / LAYOUTS_FILENAME)
-
-
 def load_wildtype_sequence() -> str:
     """Return the 304-residue wild-type IRED-88 protein sequence.
 
-    The sequence is read from a wild-type row of the master table (rows whose
-    mutation field is empty) and is numbered 1-304 without the N-terminal
+    The sequence is read from ``data/external/ired88_wt.fasta``, written by
+    ``scripts/fetch_data.py`` from the sequence published in the paper's
+    supporting information. It is numbered 1-304 without the N-terminal
     expression tag used for crystallization.
 
     :returns: One-letter protein sequence of wild-type IRED-88.
-    :raises ValueError: If no wild-type row is present in the master table.
     """
-    mt = load_master_table()
-    wt_rows = mt[mt["mutation"].isna()]
-    if wt_rows.empty:
-        msg = "No wild-type rows found in the master table."
-        raise ValueError(msg)
-    return wt_rows["prot_seq"].iloc[0].rstrip("*")
+    lines = (EXTERNAL_DATA_DIR / WT_FASTA_FILENAME).read_text().splitlines()
+    return "".join(line for line in lines if not line.startswith(">"))
 
 
 def extract_single_mutants(activities: pd.DataFrame) -> pd.DataFrame:

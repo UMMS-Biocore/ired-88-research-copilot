@@ -16,11 +16,6 @@ it was published and verifies it against a checksum:
   ``scripts/predict_structure_esmfold.py`` (the public ESM Fold API returns
   the same coordinates as the original run).
 
-The row-level ``ired-master-table.csv`` and ``layouts.csv`` were never
-publicly deposited; the demo notebooks do not read them (only
-``data.load_si002`` and ``data.load_si003`` are used), so the script skips
-them with a note.
-
 Usage (from the repo root):
 
     pixi run fetch-data        # or: uv run scripts/fetch_data.py
@@ -65,11 +60,6 @@ DOWNLOADS = [
     ),
 ]
 
-NOT_PUBLICLY_DEPOSITED = [
-    ("data/raw/ired-master-table.csv", "row-level variant records"),
-    ("data/raw/layouts.csv", "plate layout metadata"),
-]
-
 
 def md5(path: Path) -> str:
     """Return the MD5 checksum of a file."""
@@ -86,6 +76,7 @@ def download(url: str, dest: Path, normalize: bool = False) -> None:
     request = urllib.request.Request(
         url, headers={"User-Agent": "ired-88-research-copilot/1.0"}
     )
+    dest.parent.mkdir(parents=True, exist_ok=True)
     with urllib.request.urlopen(request, timeout=180) as response:
         if normalize:
             text = "\n".join(
@@ -147,14 +138,6 @@ def main() -> int:
         if result.returncode != 0 or not esmfold.exists():
             failures.append(str(esmfold.relative_to(HERE)))
             print("  FAILED: prediction did not produce the file")
-
-    for rel, what in NOT_PUBLICLY_DEPOSITED:
-        dest = HERE / rel
-        state = "present" if dest.exists() else "absent"
-        print(
-            f"skipping  {rel} ({what}) -- never publicly deposited; {state}. "
-            "The demo notebooks do not read it."
-        )
 
     if failures:
         print(f"\n{len(failures)} file(s) failed: {', '.join(failures)}")

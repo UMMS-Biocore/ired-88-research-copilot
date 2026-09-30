@@ -24,8 +24,10 @@ of the raw tables and respect applicable terms from the original study.
 |------|----------|
 | `cs1c02786_si_002.csv` | Per-mutation activity summaries: `mutation`, `mean` (activity), `alpha`, `beta`, `ratio`, `count` (n measurements), `date`, `hash` (batch fingerprint). 11,305 rows; 4,720 strict single mutants. |
 | `cs1c02786_si_003.csv` | Enantioselectivity (R-ee) and conversion (`ratio`) per variant, with the strategy that produced it (`experiment`: DMS, EPPCR1-3, ML, SGM, LowN, FragLib). |
-| `ired-master-table.csv` | Row-level variant records: sample id, layout code, plate position, mutation string, full protein sequence, plate code. 33,534 rows; wild-type rows have an empty `mutation`. |
-| `layouts.csv` | Plate layout metadata: layout id/code, experiment, plate size. |
+
+The campaign's row-level master table and plate layouts are not used by
+this repo -- everything here (notebooks, tests, CLI) runs on the two SI
+tables alone.
 
 ## Quick orientation
 
