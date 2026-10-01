@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.18.4"
+__generated_with = "0.25.0"
 app = marimo.App(width="medium")
 
 
@@ -16,21 +16,19 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo, theme):
-    mo.md(
-        f"""
-        <span style="background:{theme.KB};color:white;padding:3px 12px;
-        border-radius:12px;font-size:12px;font-weight:600">Q3 / 6 · THE KNOWLEDGE BASE</span>
+    mo.md(f"""
+    <span style="background:{theme.KB};color:white;padding:3px 12px;
+    border-radius:12px;font-size:12px;font-weight:600">Q3 / 6 · THE KNOWLEDGE BASE</span>
 
-        # What does prior work already know about our top hits?
+    # What does prior work already know about our top hits?
 
-        `kb/papers/` holds one markdown note per paper: YAML frontmatter for
-        structure, prose for claims. This is what makes the repo a *research
-        copilot* rather than a folder of data -- analysis questions can be
-        answered not just from numbers, but from what the literature already
-        established, searched programmatically via
-        `ired_88_research_copilot/kb.py`.
-        """
-    )
+    `kb/papers/` holds one markdown note per paper: YAML frontmatter for
+    structure, prose for claims. This is what makes the repo a *research
+    copilot* rather than a folder of data -- analysis questions can be
+    answered not just from numbers, but from what the literature already
+    established, searched programmatically via
+    `ired_88_research_copilot/kb.py`.
+    """)
     return
 
 
@@ -60,20 +58,18 @@ def _(mo, notes, pd):
         ]
     )
     notes_block
-    return (notes_block,)
+    return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
-        ## Ask the KB anything
+    mo.md(r"""
+    ## Ask the KB anything
 
-        Edit the query below -- the search re-runs as you type. Terms are
-        matched against every note's title, tags, and body; notes matching
-        more distinct terms rank higher.
-        """
-    )
+    Edit the query below -- the search re-runs as you type. Terms are
+    matched against every note's title, tags, and body; notes matching
+    more distinct terms rank higher.
+    """)
     return
 
 
@@ -134,7 +130,7 @@ def _(kb, kb_query, mo, notes):
         ]
         + hit_blocks
     )
-    return (ranked_hits,)
+    return
 
 
 @app.cell(hide_code=True)

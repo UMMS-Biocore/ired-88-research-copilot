@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.18.4"
+__generated_with = "0.25.0"
 app = marimo.App(width="medium")
 
 
@@ -18,19 +18,17 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo, theme):
-    mo.md(
-        f"""
-        <span style="background:{theme.PRIMARY};color:white;padding:3px 12px;
-        border-radius:12px;font-size:12px;font-weight:600">Q1 / 6 · THE DATA</span>
+    mo.md(f"""
+    <span style="background:{theme.PRIMARY};color:white;padding:3px 12px;
+    border-radius:12px;font-size:12px;font-weight:600">Q1 / 6 · THE DATA</span>
 
-        # Which single mutations improve IRED-88?
+    # Which single mutations improve IRED-88?
 
-        The deep mutational scan measured nearly all ~6,000 possible single
-        mutants of the 304-residue enzyme. `mean` is the batch-adjusted
-        activity (paper SI-002); `count` is how many times that mutant was
-        measured across plates.
-        """
-    )
+    The deep mutational scan measured nearly all ~6,000 possible single
+    mutants of the 304-residue enzyme. `mean` is the batch-adjusted
+    activity (paper SI-002); `count` is how many times that mutant was
+    measured across plates.
+    """)
     return
 
 
@@ -71,7 +69,7 @@ def _(best, median_mean, mo, wt_mean, wt_n):
         justify="space-between",
     )
     stat_row
-    return (stat_row,)
+    return
 
 
 @app.cell(hide_code=True)
@@ -96,7 +94,7 @@ def _(alt, mo, singles):
         .properties(width=860, height=340)
     )
     mo.vstack([heatmap])
-    return (heatmap,)
+    return
 
 
 @app.cell(hide_code=True)
@@ -118,7 +116,7 @@ def _(alt, singles, theme, wt_mean):
         .properties(width=720, height=260)
     )
     top_chart
-    return (top_chart, top15)
+    return
 
 
 @app.cell(hide_code=True)
@@ -153,20 +151,18 @@ def _(alt, mo, pd, singles, theme):
         .encode(x="pos:Q", tooltip=["label:N"])
     )
     mo.vstack([position_chart + boundaries])
-    return (position_chart,)
+    return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
-        ## Explore it yourself
+    mo.md(r"""
+    ## Explore it yourself
 
-        Drag through positions and watch the 19 possible mutations at each.
-        Try position **220** -- the DMS's most-replicated lead -- and
-        position **296**, buried in the tail the crystal cannot see.
-        """
-    )
+    Drag through positions and watch the 19 possible mutations at each.
+    Try position **220** -- the DMS's most-replicated lead -- and
+    position **296**, buried in the tail the crystal cannot see.
+    """)
     return
 
 
@@ -180,7 +176,7 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(alt, distances, mo, position_slider, singles, structure, theme):
+def _(alt, distances, mo, position_slider, singles, structure):
     pos_selected = position_slider.value
     at_position = singles[singles["pos"] == pos_selected].sort_values("mut_aa")
     explorer_chart = (
@@ -214,7 +210,7 @@ def _(alt, distances, mo, position_slider, singles, structure, theme):
         kind="neutral",
     )
     mo.vstack([explorer_note, explorer_chart])
-    return (explorer_chart,)
+    return
 
 
 @app.cell(hide_code=True)
