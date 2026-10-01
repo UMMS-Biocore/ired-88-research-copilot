@@ -90,6 +90,8 @@ dependencies = [
     "python-dotenv",
     "typer",
     "jax",
+    "marimo-lens>=0.2.3,<0.3",
+    "marimo-studio>=0.2.3,<0.3",
 ]
 readme = "README.md"
 
@@ -113,6 +115,8 @@ ired-88-research-copilot = { path = ".", editable = true }
 [tool.pixi.dependencies]
 marimo = "*"
 pymdown-extensions = ">=10.21.2,<12"
+# PyPI watchdog 6.0.0 has no cp314 macOS wheel; conda-forge ships a binary.
+watchdog = ">=6"
 
 # NOTE: Testing dependencies (not needed for running program) go here.
 [tool.pixi.feature.tests.dependencies]
