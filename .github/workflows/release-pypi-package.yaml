@@ -55,7 +55,7 @@ env:
 jobs:
   deploy-package:
     runs-on: ubuntu-latest
-    name: ${{ github.event_name == "pull_request" && "(Dry Run) " || "" }}Publish Python Package to PyPI
+    name: ${{ github.event_name == 'pull_request' && '(Dry Run) ' || '' }}Publish Python Package to PyPI
     permissions:
       id-token: write
       contents: write
@@ -83,7 +83,7 @@ jobs:
         with:
           pixi-version: latest
           cache: true
-          cache-write: ${{ github.event_name == "push" }}
+          cache-write: ${{ github.event_name == 'push' }}
 
       - name: Set version name
         run: echo "VERSION_NAME=${{ github.event.inputs.version_name || env.DEFAULT_VERSION_NAME }}" >> $GITHUB_ENV
@@ -147,7 +147,7 @@ jobs:
       # --- BUILD & VERIFY (no external side effects) ---
 
       - name: Write release notes
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
@@ -156,7 +156,7 @@ jobs:
           llamabot git write-release-notes
 
       - name: Commit release notes
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           uv tool install pre-commit
           pre-commit run --all-files || pre-commit run --all-files
@@ -169,7 +169,7 @@ jobs:
       # --- PRE-FLIGHT CHECK ---
 
       - name: Check if version already exists on PyPI
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://pypi.org/pypi/ired-88-research-copilot/${{ env.version_number }}/json")
           if [ "$HTTP_CODE" == "200" ]; then
@@ -181,7 +181,7 @@ jobs:
       # --- MUTATIONS (ordered by reversibility: most reversible first) ---
 
       - name: Capture pre-push state
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         id: pre_push_state
         run: |
           git fetch origin main
@@ -189,7 +189,7 @@ jobs:
           echo "Pre-push origin/main SHA: $(git rev-parse origin/main)"
 
       - name: Rebase on origin/main and retag
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         id: rebase
         run: |
           if ! git rebase origin/main; then
@@ -202,12 +202,12 @@ jobs:
           git tag -a "v${{ env.version_number }}" -m "Release version ${{ env.version_number }}"
 
       - name: Atomic push (branch + tag)
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         id: git_push
         run: git push --atomic origin main "refs/tags/v${{ env.version_number }}"
 
       - name: Create release in GitHub repo
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         id: create_release
         uses: ncipollo/release-action@v1
         with:
@@ -216,18 +216,18 @@ jobs:
           tag: v${{ env.version_number }}
 
       - name: Publish package (trusted publishing)
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         id: pypi_publish
         run: uv publish --trusted-publishing always
 
       - name: Ensure complete
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         run: echo "Auto-release complete!"
 
       # --- ROLLBACK (runs on any failure during mutation steps) ---
 
       - name: Rollback on failure
-        if: ${{ failure() && github.event_name != "pull_request" }}
+        if: ${{ failure() && github.event_name != 'pull_request' }}
         run: |
           echo "::error::Release failed! Attempting automatic rollback..."
           VERSION="v${{ env.version_number }}"

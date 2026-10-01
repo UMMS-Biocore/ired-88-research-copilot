@@ -21,6 +21,9 @@ jobs:
           cache: true
           environments: tests
 
+      - name: Fetch demo data
+        run: pixi run fetch-data
+
       - name: Run tests
         run: |
           pixi run test

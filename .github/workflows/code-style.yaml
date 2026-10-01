@@ -14,6 +14,9 @@ jobs:
           enable-cache: true
       - uses: prefix-dev/setup-pixi@v0.8.1
         with:
+          # Pin the version that wrote pixi.lock. A newer pixi rewrites the
+          # lockfile, and the pixi-install pre-commit hook then fails the job.
+          pixi-version: 0.72.0
           cache: true
       - name: Run pre-commit
         run: uvx pre-commit run --all-files
