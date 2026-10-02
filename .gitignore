@@ -145,6 +145,8 @@ cython_debug/
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 # Custom
+# Project environment is Pixi (pixi.lock), not uv.
+uv.lock
 notebooks/__marimo__/
 notebooks/live/__marimo__/
 oryx-build-commands.txt
